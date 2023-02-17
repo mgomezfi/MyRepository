@@ -1,0 +1,12 @@
+**IglooScore1
+The first test I found branching out on jacoco was the branch that hadn't been covered. This branch
+was determining the least of the two and setting a variable equal to the least value. This if condition
+had the "<" switched around which made the greater value as the "least" value. The code also lacked code
+that validated whether or not the values were out of bounds ( 0 <= x <= 50).
+
+**IglooScore2
+The test that tested the middle one being the least had an error where instead of excluding the 
+middle number from the score, it excluded the last one and included the middle one. There was also
+an error where if all the values were equal it would equal the top 2 values to 98. I also had some
+coverage issues of these conditions. I was able to fix one of them by switching the greater-than-
+values.

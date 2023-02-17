@@ -1,0 +1,97 @@
+<!-- Ant build file for running IglooScore JUnit tests with JaCoCo -->
+<!-- Jonathan Cook, 14 Sep 2022 -->
+<project name="iglooscore" default="report">
+
+   <!-- JUnit location. CHANGE THIS FOR YOUR SYSTEM -->
+   <property name="junitjar" location="/home/ugrad18/mfierro/tools/junit/junit-platform-console-standalone-1.9.0.jar"/>
+   <!-- JaCoCo locations: CHANGE THESE FOR YOUR SYSTEM -->
+   <property name="jacocodir" location="/home/ugrad18/mfierro/tools/jacoco/lib"/>
+   <property name="jacococlijar" location="/home/ugrad18/mfierro/tools/jacoco/lib/jacococli.jar"/>
+
+   <!-- standard compile task, but turn debugging on for source viewing -->
+   <!-- class files are output into a "class" folder, so that Jacoco
+        instrumentation can handle them without recursion conflicts -->
+   <target name="compile" description="compile the source">
+      <mkdir dir="class"/>
+      <javac srcdir="." destdir="class" includeantruntime="false" 
+             debug="true" classpath="${junitjar}"/>
+   </target>
+
+   <!-- use Jacoco to do offline instrumentation (instruments the class
+        files and then stores instrumented class files in "covinst" folder) -->
+   <target name="instrument" description="add coverage instrumentation" depends="compile">
+      <java jar="${jacococlijar}" classpath="./class" fork="true">
+         <arg value="instrument"/>
+         <arg value="class/IglooScore1.class"/>
+         <arg value="class/IglooScore2.class"/>
+         <arg value="--dest"/>
+         <arg value="covinst"/>
+      </java>
+   </target>
+
+   <!-- example command-line run of IglooScore1 with NO coverage data
+        collection, for demonstration only; JUnit does not need this -->
+   <target name="run" description="run IglooScoreRun" depends="compile">
+      <echo message="Run IglooScore 1 args: 4 5 4"/>
+      <java classpath="class" classname="IglooScore1" fork="true">
+         <arg value="4"/><arg value="5"/><arg value="4"/>
+      </java>
+   </target>
+
+   <!-- example command-line run of IglooScore1 WITH coverage data
+        collection, for demonstration only; JUnit does not need this -->
+   <target name="run-inst" description="run IglooScoreRun" depends="instrument">
+      <echo message="Run IglooScore 1 args: 4 5 4"/>
+      <java classpath="covinst:${jacocodir}/jacocoagent.jar"
+            classname="IglooScore1" fork="true">
+         <arg value="4"/><arg value="5"/><arg value="4"/>
+      </java>
+   </target>
+
+   <!-- execute JUnit tests and collect coverage information from Jacoco -->
+   <target name="junit" description="run JUnit tests" depends="instrument">
+      <!-- first delete existing jacoco data file so that there is no
+           extraneous coverage information left over from something else --> 
+      <delete>
+         <fileset dir="." includes="jacoco.exec"/>
+      </delete>
+      <java jar="${junitjar}" classpath="." fork="true">
+         <jvmarg value = "-javaagent:${jacocodir}/jacocoagent.jar=excludes=*"/>
+         <arg value="--classpath=covinst:class"/>
+         <arg value="-c"/><arg value="IS1Test"/>
+         <arg value="-c"/><arg value="IS2Test"/>
+      </java>
+   </target>
+
+   <!-- use Jacoco to generate an HTML coverage report -->
+   <target name="report" description="generate jacoco report" 
+           depends="junit">
+      <java jar="${jacococlijar}" classpath="." fork="true">
+         <arg value="report"/>
+         <arg value="jacoco.exec"/>
+         <arg value="--classfiles"/>
+         <arg value="class"/>
+         <arg value="--sourcefiles"/>
+         <arg value="."/>
+         <arg value="--html"/>
+         <arg value="html"/>
+      </java>
+   </target>
+
+   <!-- clean up class and data files, but leave the report -->
+   <target name="codeclean">
+      <delete dir="class"/>
+      <delete dir="covinst"/>
+      <delete>
+         <fileset dir="." includes="jacoco.exec"/>
+         <fileset dir="." includes="*.class"/>
+      </delete>
+   </target>
+
+   <!-- clean up as 'codeclean' does, plus remove jacoco report -->
+   <target name="clean" depends="codeclean">
+      <delete dir="html"/>
+   </target>
+
+</project>
+

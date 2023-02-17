@@ -1,0 +1,14 @@
+**INTERSECTION IS ASSUMED TO BE TRUE IF THE 2 CIRCLES OVERLAP OR IF THEIR BOUNDARIES ARE TANGENTIAL**
+Circles CLass
+
+	The moveBy funct. worked perfectly.
+
+	The scale function had no functionality which was tested by the simpleScalingUp() function along with
+	the simpleNegativeScaling() which would return an unchanged radius. To fix it I replaced the '+' with
+	a '*' to fix the simpleScalingUp portion and added a simple if-statement that would catch if there was
+	a negative value before any modifications.
+
+Circle1 and Circle2 Class
+
+	
+	
