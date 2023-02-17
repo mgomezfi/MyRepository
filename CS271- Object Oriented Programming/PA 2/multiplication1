@@ -1,0 +1,38 @@
+// CS 271 -       PA 2
+// Program Name:  bankAccount.c
+// Author:        Marco Andres Gomez Fierro
+// Date:          9/2/2021
+// Purpose:       Use a sentinel loop to add together the debits and credits
+
+#include <stdio.h>
+#include <math.h>
+
+int main () {
+
+   //Initializing the Variables
+
+    int Reslt;
+
+   //Prints first 2 Lines
+
+    printf("  X     1     2     3     4     5     6     7     8     9    10\n");
+    printf("----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----\n");
+
+    //Nested For-Loops
+
+    for ( int i = 1 ; i <= 10 ; i++ ) {
+
+        printf( i > 9 ? " %d   " : "  %d   " , i ); //Ternary Operator For Lining up Numbers under their Column
+
+        for( int j = 1 ; j <= 10 ; j++ ){
+
+            Reslt = i * j;
+            printf( Reslt > 99 ? "%d   " :  Reslt > 9  ? " %d   " : "  %d   " , Reslt ); //Ternary Operator For Lining up Numbers under their Column
+
+        }   // End of first For-Loop
+
+        printf("\n");
+
+    }   //End of Nested For-Loops
+
+}   //End of Main
